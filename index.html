@@ -1,0 +1,1291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Opera LED — Handcrafted Neon Art</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Cinzel:wght@400;500;600&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --gold: #C9A84C;
+    --gold-light: #E8C97A;
+    --gold-dim: #8A6D2E;
+    --gold-pale: #F5E6BC;
+    --black: #0A0A08;
+    --black-mid: #111110;
+    --black-surface: #161614;
+    --black-card: #1A1A17;
+    --border: rgba(201,168,76,0.18);
+    --border-hover: rgba(201,168,76,0.45);
+    --text-muted: rgba(201,168,76,0.55);
+    --font-display: 'Cinzel', serif;
+    --font-body: 'Cormorant Garamond', serif;
+    --font-ui: 'Jost', sans-serif;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--gold);
+    font-family: var(--font-body);
+    font-size: 18px;
+    line-height: 1.6;
+    overflow-x: hidden;
+    cursor: default;
+  }
+
+  /* ── CUSTOM CURSOR ── */
+  * { cursor: none !important; }
+  #cursor {
+    position: fixed; width: 10px; height: 10px;
+    background: var(--gold); border-radius: 50%;
+    pointer-events: none; z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: transform 0.15s ease, opacity 0.2s;
+    mix-blend-mode: difference;
+  }
+  #cursor-ring {
+    position: fixed; width: 36px; height: 36px;
+    border: 1px solid var(--gold); border-radius: 50%;
+    pointer-events: none; z-index: 9998;
+    transform: translate(-50%, -50%);
+    transition: transform 0.35s cubic-bezier(0.23,1,0.32,1), width 0.3s, height 0.3s, opacity 0.2s;
+    opacity: 0.5;
+  }
+  body:has(a:hover) #cursor-ring,
+  body:has(button:hover) #cursor-ring { width: 56px; height: 56px; opacity: 0.9; }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.4rem 4rem;
+    border-bottom: 1px solid var(--border);
+    background: rgba(10,10,8,0.88);
+    backdrop-filter: blur(12px);
+    transition: padding 0.3s;
+  }
+  .nav-logo {
+    display: flex; align-items: center; gap: 0.75rem;
+    font-family: var(--font-display); font-size: 0.95rem;
+    letter-spacing: 0.22em; text-decoration: none; color: var(--gold);
+  }
+  .nav-logo svg { width: 30px; height: 30px; }
+  .nav-links {
+    display: flex; align-items: center; gap: 3rem;
+    font-family: var(--font-ui); font-size: 0.72rem;
+    letter-spacing: 0.2em; text-transform: uppercase;
+  }
+  .nav-links a {
+    color: var(--gold); text-decoration: none; opacity: 0.75;
+    transition: opacity 0.2s;
+  }
+  .nav-links a:hover { opacity: 1; }
+  .nav-cta {
+    font-family: var(--font-ui); font-size: 0.72rem;
+    letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--gold); background: transparent;
+    border: 1px solid var(--gold); padding: 0.55rem 1.4rem;
+    text-decoration: none; transition: background 0.25s, color 0.25s;
+  }
+  .nav-cta:hover { background: var(--gold); color: var(--black); }
+
+  /* ── LANG SWITCHER ── */
+  .lang-switcher {
+    display: flex; align-items: center; gap: 0;
+    border: 1px solid var(--border); overflow: hidden;
+    margin-left: 1.5rem;
+  }
+  .lang-btn {
+    font-family: var(--font-ui); font-size: 0.65rem;
+    letter-spacing: 0.15em; text-transform: uppercase;
+    background: transparent; color: var(--text-muted);
+    border: none; padding: 0.4rem 0.65rem;
+    transition: background 0.2s, color 0.2s;
+    cursor: none;
+  }
+  .lang-btn.active { background: var(--gold); color: var(--black); }
+  .lang-btn:not(.active):hover { color: var(--gold); background: rgba(201,168,76,0.08); }
+  .lang-divider { width: 1px; height: 18px; background: var(--border); flex-shrink: 0; }
+
+  /* ── HERO ── */
+  #hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    position: relative; text-align: center; padding: 8rem 2rem 4rem;
+    overflow: hidden;
+  }
+  .hero-glow {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 700px; height: 500px;
+    background: radial-gradient(ellipse, rgba(201,168,76,0.07) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-ring {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 520px; height: 360px;
+    border: 1px solid rgba(201,168,76,0.12);
+    border-radius: 50%;
+    pointer-events: none;
+  }
+  .hero-ring-2 {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 680px; height: 460px;
+    border: 1px solid rgba(201,168,76,0.06);
+    border-radius: 50%;
+    pointer-events: none;
+  }
+  .hero-eyebrow {
+    font-family: var(--font-ui); font-size: 0.68rem;
+    letter-spacing: 0.35em; text-transform: uppercase;
+    color: var(--text-muted); margin-bottom: 2rem;
+    animation: fadeUp 1s ease both;
+  }
+  .hero-title {
+    font-family: var(--font-display);
+    font-size: clamp(3.5rem, 8vw, 7rem);
+    font-weight: 400; line-height: 1.0;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--gold);
+    text-shadow: 0 0 60px rgba(201,168,76,0.25);
+    animation: fadeUp 1s 0.15s ease both;
+  }
+  .hero-sub {
+    font-family: var(--font-ui); font-size: 0.72rem;
+    letter-spacing: 0.3em; text-transform: uppercase;
+    color: var(--text-muted); margin-top: 1.5rem;
+    animation: fadeUp 1s 0.3s ease both;
+  }
+  .hero-divider {
+    width: 40px; height: 1px; background: var(--gold-dim);
+    margin: 2rem auto;
+    animation: fadeUp 1s 0.4s ease both;
+  }
+  .hero-btns {
+    display: flex; gap: 1.25rem; justify-content: center;
+    animation: fadeUp 1s 0.45s ease both;
+  }
+  .btn-primary {
+    font-family: var(--font-ui); font-size: 0.72rem;
+    letter-spacing: 0.2em; text-transform: uppercase;
+    background: var(--gold); color: var(--black);
+    padding: 0.9rem 2.5rem; text-decoration: none;
+    font-weight: 500; transition: background 0.2s, box-shadow 0.2s;
+  }
+  .btn-primary:hover { background: var(--gold-light); box-shadow: 0 0 30px rgba(201,168,76,0.3); }
+  .btn-outline {
+    font-family: var(--font-ui); font-size: 0.72rem;
+    letter-spacing: 0.2em; text-transform: uppercase;
+    background: transparent; color: var(--gold);
+    border: 1px solid var(--gold);
+    padding: 0.9rem 2.5rem; text-decoration: none;
+    transition: background 0.2s, color 0.2s;
+  }
+  .btn-outline:hover { background: rgba(201,168,76,0.08); }
+  .scroll-hint {
+    position: absolute; bottom: 2.5rem; left: 50%; transform: translateX(-50%);
+    font-family: var(--font-ui); font-size: 0.62rem;
+    letter-spacing: 0.3em; text-transform: uppercase;
+    color: var(--text-muted);
+    animation: fadeUp 1s 0.6s ease both, pulse 2.5s 1.5s ease-in-out infinite;
+  }
+
+  /* ── CATEGORIES ── */
+  #categories {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    border-top: 1px solid var(--border);
+  }
+  .cat-item {
+    padding: 2.5rem 2rem;
+    border-right: 1px solid var(--border);
+    text-align: center; transition: background 0.3s;
+  }
+  .cat-item:last-child { border-right: none; }
+  .cat-item:hover { background: var(--black-surface); }
+  .cat-label {
+    font-family: var(--font-ui); font-size: 0.62rem;
+    letter-spacing: 0.25em; text-transform: uppercase;
+    color: var(--text-muted); margin-bottom: 0.5rem;
+  }
+  .cat-name {
+    font-family: var(--font-body); font-size: 1.35rem;
+    font-weight: 400; color: var(--gold);
+    font-style: italic;
+  }
+
+  /* ── SECTIONS ── */
+  section { padding: 7rem 4rem; }
+  .section-label {
+    font-family: var(--font-ui); font-size: 0.65rem;
+    letter-spacing: 0.35em; text-transform: uppercase;
+    color: var(--text-muted); margin-bottom: 1rem;
+  }
+  .section-title {
+    font-family: var(--font-display); font-size: clamp(2rem, 4vw, 3.5rem);
+    font-weight: 400; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--gold); line-height: 1.1;
+  }
+
+  /* ── COLLECTION ── */
+  #collection { background: var(--black-surface); }
+  .collection-header {
+    display: flex; align-items: flex-end; justify-content: space-between;
+    margin-bottom: 4rem; gap: 2rem;
+  }
+  .collection-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5px;
+  }
+  .product-card {
+    background: var(--black-card);
+    border: 1px solid var(--border);
+    overflow: hidden; position: relative;
+    transition: border-color 0.3s;
+    aspect-ratio: 3/4;
+    display: flex; flex-direction: column;
+  }
+  .product-card:hover { border-color: var(--border-hover); }
+  .product-card:hover .product-glow { opacity: 1; }
+  .product-img {
+    flex: 1;
+    display: flex; align-items: center; justify-content: center;
+    position: relative; overflow: hidden;
+    background: linear-gradient(135deg, #0d0d0a 0%, #161410 100%);
+  }
+  .neon-svg { width: 70%; height: 70%; }
+  .product-glow {
+    position: absolute; inset: 0;
+    opacity: 0; transition: opacity 0.5s;
+    pointer-events: none;
+  }
+  .product-info {
+    padding: 1.5rem;
+    border-top: 1px solid var(--border);
+  }
+  .product-name {
+    font-family: var(--font-body); font-size: 1.2rem;
+    font-weight: 400; color: var(--gold); font-style: italic;
+  }
+  .product-type {
+    font-family: var(--font-ui); font-size: 0.62rem;
+    letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--text-muted); margin-top: 0.3rem;
+  }
+  .product-price {
+    font-family: var(--font-display); font-size: 0.9rem;
+    color: var(--gold); margin-top: 1rem;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .product-cta {
+    font-family: var(--font-ui); font-size: 0.62rem;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--gold-dim); border-bottom: 1px solid var(--gold-dim);
+    cursor: none; transition: color 0.2s, border-color 0.2s;
+    padding-bottom: 1px;
+  }
+  .product-card:hover .product-cta { color: var(--gold); border-color: var(--gold); }
+
+  /* ── CUSTOM ── */
+  #custom {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 6rem; align-items: center;
+  }
+  .custom-visual {
+    position: relative; aspect-ratio: 1;
+    border: 1px solid var(--border);
+    background: var(--black-card);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .custom-visual::before {
+    content: '';
+    position: absolute; inset: -1px;
+    background: linear-gradient(135deg, transparent 40%, rgba(201,168,76,0.07) 100%);
+    pointer-events: none;
+  }
+  .custom-text .section-title { margin-bottom: 2rem; }
+  .custom-text p {
+    font-family: var(--font-body); font-size: 1.15rem;
+    color: rgba(201,168,76,0.7); line-height: 1.8;
+    margin-bottom: 1.5rem;
+  }
+  .steps {
+    margin: 2.5rem 0;
+    display: flex; flex-direction: column; gap: 1.5rem;
+  }
+  .step {
+    display: flex; gap: 1.5rem; align-items: flex-start;
+  }
+  .step-num {
+    font-family: var(--font-display); font-size: 0.75rem;
+    color: var(--gold-dim); letter-spacing: 0.1em;
+    min-width: 32px; padding-top: 0.2rem;
+  }
+  .step-text strong {
+    font-family: var(--font-body); font-size: 1.1rem;
+    font-weight: 500; color: var(--gold); display: block;
+  }
+  .step-text span {
+    font-family: var(--font-ui); font-size: 0.75rem;
+    color: var(--text-muted); letter-spacing: 0.05em;
+  }
+
+  /* ── MARQUEE ── */
+  .marquee-wrap {
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 1.5rem 0; overflow: hidden; background: var(--black-surface);
+  }
+  .marquee-track {
+    display: flex; gap: 4rem; white-space: nowrap;
+    animation: marquee 28s linear infinite;
+  }
+  .marquee-item {
+    font-family: var(--font-display); font-size: 0.8rem;
+    letter-spacing: 0.3em; text-transform: uppercase;
+    color: var(--text-muted); display: flex; align-items: center; gap: 2rem;
+    flex-shrink: 0;
+  }
+  .marquee-dot { width: 4px; height: 4px; background: var(--gold-dim); border-radius: 50%; }
+
+  /* ── ABOUT ── */
+  #about {
+    text-align: center; max-width: 800px; margin: 0 auto;
+    padding: 7rem 2rem;
+  }
+  #about .section-title { margin-bottom: 2rem; }
+  #about p {
+    font-family: var(--font-body); font-size: 1.25rem;
+    font-style: italic; color: rgba(201,168,76,0.65); line-height: 1.9;
+    margin-bottom: 1.5rem;
+  }
+  .stat-row {
+    display: flex; justify-content: center; gap: 5rem;
+    margin-top: 4rem; padding-top: 3rem;
+    border-top: 1px solid var(--border);
+  }
+  .stat-num {
+    font-family: var(--font-display); font-size: 2.5rem;
+    color: var(--gold); display: block;
+  }
+  .stat-label {
+    font-family: var(--font-ui); font-size: 0.65rem;
+    letter-spacing: 0.25em; text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  /* ── TESTIMONIALS ── */
+  #testimonials { background: var(--black-surface); }
+  .testimonials-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 2rem; margin-top: 4rem;
+  }
+  .testi-card {
+    border: 1px solid var(--border); padding: 2.5rem;
+    background: var(--black-card); transition: border-color 0.3s;
+  }
+  .testi-card:hover { border-color: var(--border-hover); }
+  .stars {
+    display: flex; gap: 4px; margin-bottom: 1.5rem;
+  }
+  .star { color: var(--gold); font-size: 0.85rem; }
+  .testi-text {
+    font-family: var(--font-body); font-size: 1.1rem;
+    font-style: italic; color: rgba(201,168,76,0.75); line-height: 1.75;
+    margin-bottom: 1.5rem;
+  }
+  .testi-author {
+    font-family: var(--font-ui); font-size: 0.65rem;
+    letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  /* ── CONTACT ── */
+  #contact { max-width: 700px; margin: 0 auto; text-align: center; }
+  #contact .section-title { margin-bottom: 1rem; }
+  #contact p {
+    font-family: var(--font-body); font-size: 1.1rem;
+    font-style: italic; color: var(--text-muted); margin-bottom: 3rem;
+  }
+  .contact-form { text-align: left; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+  .form-group { display: flex; flex-direction: column; gap: 0.5rem; }
+  .form-group.full { grid-column: 1 / -1; }
+  .form-group label {
+    font-family: var(--font-ui); font-size: 0.65rem;
+    letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--text-muted);
+  }
+  .form-group input,
+  .form-group textarea,
+  .form-group select {
+    background: var(--black-card); border: 1px solid var(--border);
+    color: var(--gold); padding: 0.85rem 1rem;
+    font-family: var(--font-body); font-size: 1rem;
+    outline: none; transition: border-color 0.2s;
+    appearance: none;
+  }
+  .form-group input:focus,
+  .form-group textarea:focus,
+  .form-group select:focus { border-color: var(--gold); }
+  .form-group textarea { resize: vertical; min-height: 120px; }
+  .form-submit {
+    margin-top: 2rem; text-align: center;
+  }
+  .form-submit button {
+    font-family: var(--font-ui); font-size: 0.72rem;
+    letter-spacing: 0.2em; text-transform: uppercase;
+    background: var(--gold); color: var(--black);
+    border: none; padding: 1.1rem 4rem;
+    font-weight: 500; transition: background 0.2s, box-shadow 0.2s;
+    cursor: none;
+  }
+  .form-submit button:hover { background: var(--gold-light); box-shadow: 0 0 30px rgba(201,168,76,0.3); }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 3rem 4rem;
+    display: flex; align-items: center; justify-content: space-between;
+    background: var(--black);
+  }
+  .footer-logo {
+    font-family: var(--font-display); font-size: 0.85rem;
+    letter-spacing: 0.22em; text-transform: uppercase; color: var(--gold);
+    display: flex; align-items: center; gap: 0.6rem;
+  }
+  .footer-links {
+    display: flex; gap: 2.5rem;
+    font-family: var(--font-ui); font-size: 0.62rem;
+    letter-spacing: 0.18em; text-transform: uppercase;
+  }
+  .footer-links a { color: var(--text-muted); text-decoration: none; transition: color 0.2s; }
+  .footer-links a:hover { color: var(--gold); }
+  .footer-copy {
+    font-family: var(--font-ui); font-size: 0.62rem;
+    letter-spacing: 0.1em; color: var(--text-muted);
+  }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 0.45; }
+    50% { opacity: 0.9; }
+  }
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+  @keyframes flicker {
+    0%, 95%, 100% { opacity: 1; }
+    96% { opacity: 0.8; }
+    97% { opacity: 1; }
+    98% { opacity: 0.6; }
+  }
+  .neon-flicker { animation: flicker 6s infinite; }
+
+  /* ── SCROLL REVEAL ── */
+  .reveal {
+    opacity: 0; transform: translateY(32px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+  .reveal.visible { opacity: 1; transform: none; }
+
+  /* ── HAMBURGER MENU ── */
+  .nav-hamburger {
+    display: none; flex-direction: column; gap: 5px;
+    background: none; border: none; padding: 6px;
+    cursor: pointer;
+  }
+  .nav-hamburger span {
+    display: block; width: 24px; height: 1.5px;
+    background: var(--gold); transition: transform 0.3s, opacity 0.3s;
+  }
+  .nav-hamburger.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+  .nav-hamburger.open span:nth-child(2) { opacity: 0; }
+  .nav-hamburger.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+
+  .mobile-menu {
+    display: none; position: fixed; inset: 0; z-index: 99;
+    background: rgba(10,10,8,0.97); backdrop-filter: blur(16px);
+    flex-direction: column; align-items: center; justify-content: center;
+    gap: 2.5rem;
+  }
+  .mobile-menu.open { display: flex; }
+  .mobile-menu a {
+    font-family: var(--font-display); font-size: 1.6rem;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--gold); text-decoration: none; opacity: 0.8;
+    transition: opacity 0.2s;
+  }
+  .mobile-menu a:hover, .mobile-menu a:active { opacity: 1; }
+  .mobile-menu .mobile-cta {
+    margin-top: 1rem; font-family: var(--font-ui); font-size: 0.75rem;
+    letter-spacing: 0.22em; border: 1px solid var(--gold);
+    padding: 0.9rem 2.5rem; opacity: 1;
+  }
+  .mobile-menu-close {
+    position: absolute; top: 1.4rem; right: 1.5rem;
+    background: none; border: none; font-size: 1.8rem;
+    color: var(--gold); line-height: 1;
+  }
+
+  /* ── TABLET (≤900px) ── */
+  @media (max-width: 900px) {
+    nav { padding: 1.2rem 2rem; }
+    .nav-links { display: none; }
+    .nav-hamburger { display: flex; }
+    section { padding: 5rem 2rem; }
+    #categories { grid-template-columns: repeat(2, 1fr); }
+    .collection-grid { grid-template-columns: 1fr 1fr; }
+    #custom { grid-template-columns: 1fr; gap: 3rem; }
+    #custom .custom-visual { aspect-ratio: 16/9; }
+    .testimonials-grid { grid-template-columns: 1fr; }
+    .form-row { grid-template-columns: 1fr; }
+    .stat-row { gap: 3rem; }
+    footer { flex-direction: column; gap: 1.5rem; text-align: center; }
+    .footer-links { flex-wrap: wrap; justify-content: center; gap: 1.5rem; }
+  }
+
+  /* ── MOBILE (≤600px) ── */
+  @media (max-width: 600px) {
+    /* Disable custom cursor on touch */
+    * { cursor: auto !important; }
+    #cursor, #cursor-ring { display: none; }
+
+    nav { padding: 1rem 1.25rem; }
+
+    /* Hero */
+    #hero { padding: 7rem 1.5rem 5rem; }
+    .hero-title { font-size: clamp(2.6rem, 14vw, 4rem); letter-spacing: 0.06em; }
+    .hero-sub { font-size: 0.62rem; letter-spacing: 0.2em; }
+    .hero-btns { flex-direction: column; align-items: center; gap: 0.85rem; width: 100%; }
+    .btn-primary, .btn-outline { width: 100%; max-width: 300px; text-align: center; padding: 1rem 1.5rem; }
+    .hero-ring { width: 300px; height: 220px; }
+    .hero-ring-2 { width: 400px; height: 300px; }
+
+    /* Categories */
+    #categories { grid-template-columns: 1fr 1fr; }
+    .cat-item { padding: 1.75rem 1rem; }
+    .cat-name { font-size: 1.1rem; }
+
+    /* Sections */
+    section { padding: 4rem 1.25rem; }
+    .section-title { font-size: clamp(1.7rem, 8vw, 2.8rem); }
+    .collection-header { flex-direction: column; align-items: flex-start; gap: 1.25rem; }
+    .collection-header .btn-outline { width: 100%; text-align: center; }
+
+    /* Collection grid — single column on small phones */
+    .collection-grid { grid-template-columns: 1fr; gap: 1px; }
+    .product-card { aspect-ratio: 4/3; flex-direction: row; }
+    .product-img { flex: 1; }
+    .product-info { width: 48%; border-top: none; border-left: 1px solid var(--border); padding: 1.25rem; display: flex; flex-direction: column; justify-content: center; }
+
+    /* Custom section */
+    #custom { padding: 0; gap: 0; }
+    #custom > section { padding: 4rem 1.25rem; }
+    .custom-visual { aspect-ratio: 4/3; }
+    .steps { gap: 1.25rem; }
+
+    /* About */
+    #about { padding: 4rem 1.25rem; }
+    #about p { font-size: 1.05rem; }
+    .stat-row { flex-direction: column; align-items: center; gap: 2rem; }
+    .stat-num { font-size: 2rem; }
+
+    /* Testimonials */
+    .testimonials-grid { gap: 1rem; }
+    .testi-card { padding: 1.75rem 1.25rem; }
+
+    /* Contact form */
+    #contact { padding: 4rem 1.25rem; }
+    .form-group input,
+    .form-group textarea,
+    .form-group select { font-size: 16px; /* prevents iOS zoom */ padding: 0.9rem 0.85rem; }
+    .form-submit button { width: 100%; padding: 1.1rem 1rem; }
+
+    /* Footer */
+    footer { padding: 2.5rem 1.25rem; }
+    .footer-links { display: none; }
+  }
+
+  /* ── VERY SMALL (≤380px) ── */
+  @media (max-width: 380px) {
+    .hero-title { font-size: 2.4rem; }
+    .product-card { aspect-ratio: auto; flex-direction: column; }
+    .product-info { width: 100%; border-left: none; border-top: 1px solid var(--border); }
+    #categories { grid-template-columns: 1fr; }
+    .cat-item { border-right: none; border-bottom: 1px solid var(--border); padding: 1.5rem 1rem; }
+  }
+</style>
+</head>
+<body>
+
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+
+<!-- NAV -->
+<nav>
+  <a href="#hero" class="nav-logo">
+    <svg viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="15" cy="15" r="13.5" stroke="#C9A84C" stroke-width="1"/>
+      <line x1="15" y1="1.5" x2="15" y2="28.5" stroke="#C9A84C" stroke-width="1"/>
+      <path d="M15 4 A11 11 0 0 1 15 26" stroke="#C9A84C" stroke-width="1" fill="none"/>
+    </svg>
+    Opera LED
+  </a>
+  <div class="nav-links">
+    <a href="#collection" data-i18n="nav.collection">Collection</a>
+    <a href="#custom" data-i18n="nav.custom">Custom</a>
+    <a href="#about" data-i18n="nav.about">About</a>
+    <a href="#contact" data-i18n="nav.contact">Contact</a>
+    <a href="#contact" class="nav-cta" data-i18n="nav.order">Order</a>
+    <div class="lang-switcher">
+      <button class="lang-btn active" id="btnEN" onclick="setLang('en')">EN</button>
+      <div class="lang-divider"></div>
+      <button class="lang-btn" id="btnRO" onclick="setLang('ro')">RO</button>
+    </div>
+  </div>
+  <button class="nav-hamburger" id="menuBtn" aria-label="Open menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- MOBILE MENU OVERLAY -->
+<div class="mobile-menu" id="mobileMenu" role="dialog" aria-modal="true">
+  <button class="mobile-menu-close" id="menuClose" aria-label="Close menu">✕</button>
+  <a href="#collection" class="menu-link" data-i18n="nav.collection">Collection</a>
+  <a href="#custom" class="menu-link" data-i18n="nav.custom">Custom</a>
+  <a href="#about" class="menu-link" data-i18n="nav.about">About</a>
+  <a href="#contact" class="menu-link" data-i18n="nav.contact">Contact</a>
+  <a href="#contact" class="menu-link mobile-cta" data-i18n="nav.orderNow">Order Now</a>
+  <div class="lang-switcher" style="margin-top:1rem">
+    <button class="lang-btn active" id="btnEN2" onclick="setLang('en')">EN</button>
+    <div class="lang-divider"></div>
+    <button class="lang-btn" id="btnRO2" onclick="setLang('ro')">RO</button>
+  </div>
+</div>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-ring"></div>
+  <div class="hero-ring-2"></div>
+  <p class="hero-eyebrow" data-i18n="hero.eyebrow">Handcrafted · Bespoke · Luminous</p>
+  <h1 class="hero-title" data-i18n-html="hero.title">Illuminate<br>Your Space</h1>
+  <p class="hero-sub" data-i18n="hero.sub">Handcrafted LED Neon Art · Custom Orders Welcome</p>
+  <div class="hero-divider"></div>
+  <div class="hero-btns">
+    <a href="#collection" class="btn-primary" data-i18n="hero.shopNow">Shop Now</a>
+    <a href="#custom" class="btn-outline" data-i18n="hero.customize">Customize</a>
+  </div>
+  <p class="scroll-hint" data-i18n="hero.scroll">↓ Scroll to Explore</p>
+</section>
+
+<!-- CATEGORIES -->
+<div id="categories">
+  <div class="cat-item">
+    <p class="cat-label" data-i18n="cat.wallSigns">Wall Signs</p>
+    <p class="cat-name" data-i18n="cat.customText">Custom Text</p>
+  </div>
+  <div class="cat-item">
+    <p class="cat-label" data-i18n="cat.logoNeon">Logo Neon</p>
+    <p class="cat-name" data-i18n="cat.brandIdentity">Brand Identity</p>
+  </div>
+  <div class="cat-item">
+    <p class="cat-label" data-i18n="cat.interiorDecor">Interior Decor</p>
+    <p class="cat-name" data-i18n="cat.homeOffice">Home &amp; Office</p>
+  </div>
+  <div class="cat-item">
+    <p class="cat-label" data-i18n="cat.events">Events</p>
+    <p class="cat-name" data-i18n="cat.weddings">Weddings &amp; More</p>
+  </div>
+</div>
+
+<!-- MARQUEE -->
+<div class="marquee-wrap">
+  <div class="marquee-track">
+    <span class="marquee-item">Custom LED Neon <span class="marquee-dot"></span></span>
+    <span class="marquee-item">Handcrafted in Romania <span class="marquee-dot"></span></span>
+    <span class="marquee-item">Free Design Consultation <span class="marquee-dot"></span></span>
+    <span class="marquee-item">Ships Worldwide <span class="marquee-dot"></span></span>
+    <span class="marquee-item">100% Bespoke <span class="marquee-dot"></span></span>
+    <span class="marquee-item">Custom LED Neon <span class="marquee-dot"></span></span>
+    <span class="marquee-item">Handcrafted in Romania <span class="marquee-dot"></span></span>
+    <span class="marquee-item">Free Design Consultation <span class="marquee-dot"></span></span>
+    <span class="marquee-item">Ships Worldwide <span class="marquee-dot"></span></span>
+    <span class="marquee-item">100% Bespoke <span class="marquee-dot"></span></span>
+  </div>
+</div>
+
+<!-- COLLECTION -->
+<section id="collection">
+  <div class="collection-header reveal">
+    <div>
+      <p class="section-label" data-i18n="collection.label">Our Work</p>
+      <h2 class="section-title" data-i18n="collection.title">The Collection</h2>
+    </div>
+    <a href="#contact" class="btn-outline" data-i18n="collection.viewAll">View All</a>
+  </div>
+  <div class="collection-grid">
+
+    <!-- Product 1 -->
+    <div class="product-card reveal">
+      <div class="product-img">
+        <svg class="neon-svg neon-flicker" viewBox="0 0 200 120" xmlns="http://www.w3.org/2000/svg">
+          <defs><filter id="glow1"><feGaussianBlur stdDeviation="3" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+          <g filter="url(#glow1)" fill="none">
+            <path d="M30 90 Q50 20 100 30 Q150 40 170 90" stroke="#C9A84C" stroke-width="2.5" stroke-linecap="round"/>
+            <text x="100" y="85" text-anchor="middle" fill="#C9A84C" font-family="Cinzel,serif" font-size="26" font-weight="400" letter-spacing="4">LOVE</text>
+          </g>
+        </svg>
+        <div class="product-glow" style="background:radial-gradient(circle at 50% 50%,rgba(201,168,76,.12),transparent 65%)"></div>
+      </div>
+      <div class="product-info">
+        <p class="product-name" data-i18n="p1.name">Love in Light</p>
+        <p class="product-type" data-i18n="p1.type">Script · Wall Sign</p>
+        <div class="product-price">
+          <span data-i18n="p1.price">From €180</span>
+          <span class="product-cta" data-i18n="product.inquire">Inquire</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Product 2 -->
+    <div class="product-card reveal" style="transition-delay:0.1s">
+      <div class="product-img">
+        <svg class="neon-svg neon-flicker" viewBox="0 0 200 120" xmlns="http://www.w3.org/2000/svg" style="animation-delay:1.2s">
+          <defs><filter id="glow2"><feGaussianBlur stdDeviation="3.5" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+          <g filter="url(#glow2)" fill="none">
+            <rect x="30" y="30" width="140" height="60" rx="4" stroke="#E8C97A" stroke-width="2"/>
+            <text x="100" y="68" text-anchor="middle" fill="#E8C97A" font-family="Cinzel,serif" font-size="20" letter-spacing="6">OPEN</text>
+          </g>
+        </svg>
+        <div class="product-glow" style="background:radial-gradient(circle at 50% 50%,rgba(232,201,122,.15),transparent 65%)"></div>
+      </div>
+      <div class="product-info">
+        <p class="product-name" data-i18n="p2.name">Open Sign</p>
+        <p class="product-type" data-i18n="p2.type">Business · Retail</p>
+        <div class="product-price">
+          <span data-i18n="p2.price">From €220</span>
+          <span class="product-cta" data-i18n="product.inquire">Inquire</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Product 3 -->
+    <div class="product-card reveal" style="transition-delay:0.2s">
+      <div class="product-img">
+        <svg class="neon-svg neon-flicker" viewBox="0 0 200 140" xmlns="http://www.w3.org/2000/svg" style="animation-delay:2.5s">
+          <defs><filter id="glow3"><feGaussianBlur stdDeviation="4" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+          <g filter="url(#glow3)" fill="none">
+            <path d="M100 25 L105 75 M95 75 L105 75" stroke="#C9A84C" stroke-width="2.5" stroke-linecap="round"/>
+            <circle cx="100" cy="88" r="4" stroke="#C9A84C" stroke-width="2.5"/>
+            <circle cx="100" cy="88" r="16" stroke="#C9A84C" stroke-width="1.5" opacity="0.4"/>
+            <circle cx="100" cy="88" r="28" stroke="#C9A84C" stroke-width="1" opacity="0.2"/>
+            <path d="M60 120 Q80 95 100 88 Q120 95 140 120" stroke="#C9A84C" stroke-width="2" stroke-linecap="round" opacity="0.6"/>
+          </g>
+        </svg>
+        <div class="product-glow" style="background:radial-gradient(circle at 50% 60%,rgba(201,168,76,.14),transparent 60%)"></div>
+      </div>
+      <div class="product-info">
+        <p class="product-name" data-i18n="p3.name">Neon Compass</p>
+        <p class="product-type" data-i18n="p3.type">Art · Interior</p>
+        <div class="product-price">
+          <span data-i18n="p3.price">From €350</span>
+          <span class="product-cta" data-i18n="product.inquire">Inquire</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Product 4 -->
+    <div class="product-card reveal" style="transition-delay:0.05s">
+      <div class="product-img">
+        <svg class="neon-svg neon-flicker" viewBox="0 0 200 120" xmlns="http://www.w3.org/2000/svg" style="animation-delay:3.8s">
+          <defs><filter id="glow4"><feGaussianBlur stdDeviation="3" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+          <g filter="url(#glow4)" fill="none">
+            <path d="M100 20 L113 55 L150 55 L121 75 L131 110 L100 88 L69 110 L79 75 L50 55 L87 55 Z" stroke="#C9A84C" stroke-width="2" stroke-linejoin="round"/>
+          </g>
+        </svg>
+        <div class="product-glow" style="background:radial-gradient(circle at 50% 50%,rgba(201,168,76,.13),transparent 65%)"></div>
+      </div>
+      <div class="product-info">
+        <p class="product-name" data-i18n="p4.name">Star of the Night</p>
+        <p class="product-type" data-i18n="p4.type">Motif · Decorative</p>
+        <div class="product-price">
+          <span data-i18n="p4.price">From €160</span>
+          <span class="product-cta" data-i18n="product.inquire">Inquire</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Product 5 -->
+    <div class="product-card reveal" style="transition-delay:0.15s">
+      <div class="product-img">
+        <svg class="neon-svg neon-flicker" viewBox="0 0 200 120" xmlns="http://www.w3.org/2000/svg" style="animation-delay:0.7s">
+          <defs><filter id="glow5"><feGaussianBlur stdDeviation="3.5" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+          <g filter="url(#glow5)" fill="none">
+            <path d="M60 60 C60 35 140 35 140 60 C140 85 100 100 100 60 C100 35 140 35 140 60" stroke="#C9A84C" stroke-width="2.5" stroke-linecap="round"/>
+            <text x="100" y="105" text-anchor="middle" fill="#C9A84C" font-family="Cinzel,serif" font-size="11" letter-spacing="5">FOREVER</text>
+          </g>
+        </svg>
+        <div class="product-glow" style="background:radial-gradient(circle at 50% 50%,rgba(201,168,76,.12),transparent 65%)"></div>
+      </div>
+      <div class="product-info">
+        <p class="product-name" data-i18n="p5.name">Forever &amp; Always</p>
+        <p class="product-type" data-i18n="p5.type">Wedding · Events</p>
+        <div class="product-price">
+          <span data-i18n="p5.price">From €290</span>
+          <span class="product-cta" data-i18n="product.inquire">Inquire</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Product 6 -->
+    <div class="product-card reveal" style="transition-delay:0.25s">
+      <div class="product-img">
+        <svg class="neon-svg neon-flicker" viewBox="0 0 200 120" xmlns="http://www.w3.org/2000/svg" style="animation-delay:5s">
+          <defs><filter id="glow6"><feGaussianBlur stdDeviation="3" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+          <g filter="url(#glow6)" fill="none">
+            <circle cx="100" cy="55" r="35" stroke="#C9A84C" stroke-width="2"/>
+            <circle cx="100" cy="55" r="22" stroke="#C9A84C" stroke-width="1.5" opacity="0.5"/>
+            <text x="100" y="61" text-anchor="middle" fill="#C9A84C" font-family="Cinzel,serif" font-size="13" letter-spacing="2">OP</text>
+          </g>
+        </svg>
+        <div class="product-glow" style="background:radial-gradient(circle at 50% 50%,rgba(201,168,76,.13),transparent 65%)"></div>
+      </div>
+      <div class="product-info">
+        <p class="product-name" data-i18n="p6.name">Logo Neon</p>
+        <p class="product-type" data-i18n="p6.type">Brand · Business</p>
+        <div class="product-price">
+          <span data-i18n="p6.price">From €400</span>
+          <span class="product-cta" data-i18n="product.inquire">Inquire</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- MARQUEE 2 -->
+<div class="marquee-wrap">
+  <div class="marquee-track" style="animation-direction: reverse;">
+    <span class="marquee-item">LED Technology <span class="marquee-dot"></span></span>
+    <span class="marquee-item">Energy Efficient <span class="marquee-dot"></span></span>
+    <span class="marquee-item">12V Safe &amp; Low Heat <span class="marquee-dot"></span></span>
+    <span class="marquee-item">50,000h Lifespan <span class="marquee-dot"></span></span>
+    <span class="marquee-item">Dimmer Compatible <span class="marquee-dot"></span></span>
+    <span class="marquee-item">LED Technology <span class="marquee-dot"></span></span>
+    <span class="marquee-item">Energy Efficient <span class="marquee-dot"></span></span>
+    <span class="marquee-item">12V Safe &amp; Low Heat <span class="marquee-dot"></span></span>
+    <span class="marquee-item">50,000h Lifespan <span class="marquee-dot"></span></span>
+    <span class="marquee-item">Dimmer Compatible <span class="marquee-dot"></span></span>
+  </div>
+</div>
+
+<!-- CUSTOM ORDER -->
+<section>
+  <div id="custom">
+    <div class="custom-visual reveal">
+      <svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg" style="width:80%;height:80%">
+        <defs>
+          <filter id="gcustom"><feGaussianBlur stdDeviation="5" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+        </defs>
+        <g filter="url(#gcustom)" fill="none" class="neon-flicker">
+          <text x="200" y="130" text-anchor="middle" fill="#C9A84C" font-family="Cinzel,serif" font-size="38" letter-spacing="8" font-weight="400">YOUR</text>
+          <text x="200" y="200" text-anchor="middle" fill="#C9A84C" font-family="Cormorant Garamond,serif" font-size="52" font-style="italic" letter-spacing="4">Name</text>
+          <text x="200" y="260" text-anchor="middle" fill="#C9A84C" font-family="Cinzel,serif" font-size="38" letter-spacing="8" font-weight="400">HERE</text>
+          <rect x="40" y="60" width="320" height="260" rx="8" stroke="#C9A84C" stroke-width="1.5" opacity="0.25"/>
+          <rect x="20" y="40" width="360" height="300" rx="4" stroke="#C9A84C" stroke-width="0.8" opacity="0.1"/>
+        </g>
+      </svg>
+    </div>
+    <div class="custom-text reveal" style="transition-delay: 0.2s">
+      <p class="section-label" data-i18n="custom.label">Made for You</p>
+      <h2 class="section-title" data-i18n-html="custom.title">Custom<br>Orders</h2>
+      <p data-i18n="custom.p1">Every Opera LED piece begins as a conversation. Share your vision — a word, a shape, a logo — and we'll bring it to glowing life in hand-bent LED neon.</p>
+      <p data-i18n="custom.p2">Each sign is crafted with care, built to last, and shipped directly to your door anywhere in the world.</p>
+      <div class="steps">
+        <div class="step">
+          <span class="step-num">01</span>
+          <div class="step-text">
+            <strong data-i18n="custom.step1title">Share Your Vision</strong>
+            <span data-i18n="custom.step1sub">Send us your idea, text, or logo via the form below</span>
+          </div>
+        </div>
+        <div class="step">
+          <span class="step-num">02</span>
+          <div class="step-text">
+            <strong data-i18n="custom.step2title">Receive Your Design</strong>
+            <span data-i18n="custom.step2sub">We'll send a digital mockup within 48 hours — free</span>
+          </div>
+        </div>
+        <div class="step">
+          <span class="step-num">03</span>
+          <div class="step-text">
+            <strong data-i18n="custom.step3title">Approve &amp; Craft</strong>
+            <span data-i18n="custom.step3sub">Once approved, we handcraft your piece in 10–14 days</span>
+          </div>
+        </div>
+        <div class="step">
+          <span class="step-num">04</span>
+          <div class="step-text">
+            <strong data-i18n="custom.step4title">Illuminate</strong>
+            <span data-i18n="custom.step4sub">Delivered safely to your door, ready to glow</span>
+          </div>
+        </div>
+      </div>
+      <a href="#contact" class="btn-primary" data-i18n="custom.cta">Start Your Custom Order</a>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section style="border-top: 1px solid var(--border);">
+  <div id="about">
+    <p class="section-label reveal" data-i18n="about.label">Our Story</p>
+    <h2 class="section-title reveal" data-i18n="about.title">Light as an Art Form</h2>
+    <p class="reveal" style="transition-delay:0.1s" data-i18n="about.p1">Opera LED was born from a passion for the intersection of craft and light. We believe every space tells a story — and that story deserves to glow.</p>
+    <p class="reveal" style="transition-delay:0.2s" data-i18n="about.p2">Each piece is handcrafted using premium LED flex neon, mounted on precision-cut acrylic, and finished to gallery standards. Because your walls deserve more than decoration — they deserve art.</p>
+    <div class="stat-row reveal" style="transition-delay:0.3s">
+      <div>
+        <span class="stat-num">500+</span>
+        <span class="stat-label" data-i18n="about.stat1">Pieces Created</span>
+      </div>
+      <div>
+        <span class="stat-num">30+</span>
+        <span class="stat-label" data-i18n="about.stat2">Countries Shipped</span>
+      </div>
+      <div>
+        <span class="stat-num">100%</span>
+        <span class="stat-label" data-i18n="about.stat3">Bespoke</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section id="testimonials">
+  <p class="section-label reveal" data-i18n="testi.label">What They Say</p>
+  <h2 class="section-title reveal" data-i18n="testi.title">Client Stories</h2>
+  <div class="testimonials-grid">
+    <div class="testi-card reveal">
+      <div class="stars">★★★★★</div>
+      <p class="testi-text" data-i18n="testi.t1">"The neon sign for our wedding was the most talked-about decoration of the night. Absolutely stunning craftsmanship and the glow was perfect."</p>
+      <p class="testi-author">Ana &amp; Mihai · Bucharest, RO</p>
+    </div>
+    <div class="testi-card reveal" style="transition-delay:0.1s">
+      <div class="stars">★★★★★</div>
+      <p class="testi-text" data-i18n="testi.t2">"We ordered a logo neon for our studio reception. The quality is phenomenal and the process was seamless. Highly recommend Opera LED."</p>
+      <p class="testi-author">Studio Forma · Cluj-Napoca</p>
+    </div>
+    <div class="testi-card reveal" style="transition-delay:0.2s">
+      <div class="stars">★★★★★</div>
+      <p class="testi-text" data-i18n="testi.t3">"Three pieces in my home and I get compliments every single time someone visits. This is proper art — not just a sign."</p>
+      <p class="testi-author">Thomas K. · Berlin, DE</p>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section style="border-top: 1px solid var(--border);">
+  <div id="contact">
+    <p class="section-label reveal" data-i18n="contact.label">Get in Touch</p>
+    <h2 class="section-title reveal" data-i18n="contact.title">Order or Inquire</h2>
+    <p class="reveal" data-i18n="contact.sub">Tell us about your project. We'll get back to you within 24 hours with a design proposal and quote.</p>
+    <div class="contact-form reveal" style="transition-delay:0.15s">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="name" data-i18n="form.name">Your Name</label>
+          <input type="text" id="name" data-i18n-placeholder="form.namePlaceholder" placeholder="Ion Popescu">
+        </div>
+        <div class="form-group">
+          <label for="email" data-i18n="form.email">Email Address</label>
+          <input type="email" id="email" placeholder="ion@example.com">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="type" data-i18n="form.type">Type of Sign</label>
+          <select id="type">
+            <option value="" data-i18n="form.typeDefault">Select a type</option>
+            <option data-i18n="form.typeOpt1">Custom Text / Name</option>
+            <option data-i18n="form.typeOpt2">Business Logo</option>
+            <option data-i18n="form.typeOpt3">Wedding / Event</option>
+            <option data-i18n="form.typeOpt4">Decorative Motif</option>
+            <option data-i18n="form.typeOpt5">Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="size" data-i18n="form.size">Approximate Size</label>
+          <select id="size">
+            <option value="" data-i18n="form.sizeDefault">Select size</option>
+            <option data-i18n="form.sizeOpt1">Small (up to 40cm)</option>
+            <option data-i18n="form.sizeOpt2">Medium (40–80cm)</option>
+            <option data-i18n="form.sizeOpt3">Large (80–150cm)</option>
+            <option data-i18n="form.sizeOpt4">Extra Large (150cm+)</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group full">
+          <label for="message" data-i18n="form.message">Your Vision</label>
+          <textarea id="message" data-i18n-placeholder="form.messagePlaceholder" placeholder="Describe your idea — text, shape, colors, where it will be displayed..."></textarea>
+        </div>
+      </div>
+      <div class="form-submit">
+        <button type="button" onclick="handleSubmit()" data-i18n="form.submit">Send Your Request</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">
+    <svg width="22" height="22" viewBox="0 0 30 30" fill="none">
+      <circle cx="15" cy="15" r="13.5" stroke="#C9A84C" stroke-width="1"/>
+      <line x1="15" y1="1.5" x2="15" y2="28.5" stroke="#C9A84C" stroke-width="1"/>
+      <path d="M15 4 A11 11 0 0 1 15 26" stroke="#C9A84C" stroke-width="1" fill="none"/>
+    </svg>
+    Opera LED
+  </div>
+  <div class="footer-links">
+    <a href="#collection" data-i18n="nav.collection">Collection</a>
+    <a href="#custom" data-i18n="nav.custom">Custom</a>
+    <a href="#about" data-i18n="nav.about">About</a>
+    <a href="#contact" data-i18n="nav.contact">Contact</a>
+  </div>
+  <p class="footer-copy" data-i18n="footer.copy">© 2025 Opera LED. All rights reserved.</p>
+</footer>
+
+<script>
+  /* ── TRANSLATIONS ── */
+  const T = {
+    en: {
+      'nav.collection': 'Collection', 'nav.custom': 'Custom', 'nav.about': 'About',
+      'nav.contact': 'Contact', 'nav.order': 'Order', 'nav.orderNow': 'Order Now',
+      'hero.eyebrow': 'Handcrafted · Bespoke · Luminous',
+      'hero.title': 'Illuminate<br>Your Space',
+      'hero.sub': 'Handcrafted LED Neon Art · Custom Orders Welcome',
+      'hero.shopNow': 'Shop Now', 'hero.customize': 'Customize',
+      'hero.scroll': '↓ Scroll to Explore',
+      'cat.wallSigns': 'Wall Signs', 'cat.customText': 'Custom Text',
+      'cat.logoNeon': 'Logo Neon', 'cat.brandIdentity': 'Brand Identity',
+      'cat.interiorDecor': 'Interior Decor', 'cat.homeOffice': 'Home & Office',
+      'cat.events': 'Events', 'cat.weddings': 'Weddings & More',
+      'collection.label': 'Our Work', 'collection.title': 'The Collection',
+      'collection.viewAll': 'View All',
+      'product.inquire': 'Inquire',
+      'p1.name': 'Love in Light', 'p1.type': 'Script · Wall Sign', 'p1.price': 'From €180',
+      'p2.name': 'Open Sign', 'p2.type': 'Business · Retail', 'p2.price': 'From €220',
+      'p3.name': 'Neon Compass', 'p3.type': 'Art · Interior', 'p3.price': 'From €350',
+      'p4.name': 'Star of the Night', 'p4.type': 'Motif · Decorative', 'p4.price': 'From €160',
+      'p5.name': 'Forever & Always', 'p5.type': 'Wedding · Events', 'p5.price': 'From €290',
+      'p6.name': 'Logo Neon', 'p6.type': 'Brand · Business', 'p6.price': 'From €400',
+      'custom.label': 'Made for You', 'custom.title': 'Custom<br>Orders',
+      'custom.p1': "Every Opera LED piece begins as a conversation. Share your vision — a word, a shape, a logo — and we'll bring it to glowing life in hand-bent LED neon.",
+      'custom.p2': 'Each sign is crafted with care, built to last, and shipped directly to your door anywhere in the world.',
+      'custom.step1title': 'Share Your Vision', 'custom.step1sub': 'Send us your idea, text, or logo via the form below',
+      'custom.step2title': 'Receive Your Design', 'custom.step2sub': "We'll send a digital mockup within 48 hours — free",
+      'custom.step3title': 'Approve & Craft', 'custom.step3sub': 'Once approved, we handcraft your piece in 10–14 days',
+      'custom.step4title': 'Illuminate', 'custom.step4sub': 'Delivered safely to your door, ready to glow',
+      'custom.cta': 'Start Your Custom Order',
+      'about.label': 'Our Story', 'about.title': 'Light as an Art Form',
+      'about.p1': 'Opera LED was born from a passion for the intersection of craft and light. We believe every space tells a story — and that story deserves to glow.',
+      'about.p2': 'Each piece is handcrafted using premium LED flex neon, mounted on precision-cut acrylic, and finished to gallery standards. Because your walls deserve more than decoration — they deserve art.',
+      'about.stat1': 'Pieces Created', 'about.stat2': 'Countries Shipped', 'about.stat3': 'Bespoke',
+      'testi.label': 'What They Say', 'testi.title': 'Client Stories',
+      'testi.t1': '"The neon sign for our wedding was the most talked-about decoration of the night. Absolutely stunning craftsmanship and the glow was perfect."',
+      'testi.t2': '"We ordered a logo neon for our studio reception. The quality is phenomenal and the process was seamless. Highly recommend Opera LED."',
+      'testi.t3': '"Three pieces in my home and I get compliments every single time someone visits. This is proper art — not just a sign."',
+      'contact.label': 'Get in Touch', 'contact.title': 'Order or Inquire',
+      'contact.sub': "Tell us about your project. We'll get back to you within 24 hours with a design proposal and quote.",
+      'form.name': 'Your Name', 'form.namePlaceholder': 'Ion Popescu',
+      'form.email': 'Email Address',
+      'form.type': 'Type of Sign', 'form.typeDefault': 'Select a type',
+      'form.typeOpt1': 'Custom Text / Name', 'form.typeOpt2': 'Business Logo',
+      'form.typeOpt3': 'Wedding / Event', 'form.typeOpt4': 'Decorative Motif', 'form.typeOpt5': 'Other',
+      'form.size': 'Approximate Size', 'form.sizeDefault': 'Select size',
+      'form.sizeOpt1': 'Small (up to 40cm)', 'form.sizeOpt2': 'Medium (40–80cm)',
+      'form.sizeOpt3': 'Large (80–150cm)', 'form.sizeOpt4': 'Extra Large (150cm+)',
+      'form.message': 'Your Vision',
+      'form.messagePlaceholder': 'Describe your idea — text, shape, colors, where it will be displayed...',
+      'form.submit': 'Send Your Request',
+      'footer.copy': '© 2025 Opera LED. All rights reserved.',
+      'alert.missing': 'Please fill in your name and email.',
+      'alert.thanks': "Thank you, {name}! We'll be in touch within 24 hours.",
+    },
+    ro: {
+      'nav.collection': 'Colecție', 'nav.custom': 'Personalizat', 'nav.about': 'Despre',
+      'nav.contact': 'Contact', 'nav.order': 'Comandă', 'nav.orderNow': 'Comandă Acum',
+      'hero.eyebrow': 'Handcraftat · Unic · Luminos',
+      'hero.title': 'Luminează-ți<br>Spațiul',
+      'hero.sub': 'Artă Neon LED Handcraftată · Comenzi Personalizate',
+      'hero.shopNow': 'Cumpără', 'hero.customize': 'Personalizează',
+      'hero.scroll': '↓ Derulează pentru a Explora',
+      'cat.wallSigns': 'Semne de Perete', 'cat.customText': 'Text Personalizat',
+      'cat.logoNeon': 'Logo Neon', 'cat.brandIdentity': 'Identitate de Brand',
+      'cat.interiorDecor': 'Decor Interior', 'cat.homeOffice': 'Casă & Birou',
+      'cat.events': 'Evenimente', 'cat.weddings': 'Nunți & Mai Mult',
+      'collection.label': 'Lucrările Noastre', 'collection.title': 'Colecția',
+      'collection.viewAll': 'Vezi Tot',
+      'product.inquire': 'Solicită',
+      'p1.name': 'Dragoste în Lumină', 'p1.type': 'Script · Semn de Perete', 'p1.price': 'De la €180',
+      'p2.name': 'Semn Deschis', 'p2.type': 'Business · Retail', 'p2.price': 'De la €220',
+      'p3.name': 'Busolă Neon', 'p3.type': 'Artă · Interior', 'p3.price': 'De la €350',
+      'p4.name': 'Steaua Nopții', 'p4.type': 'Motiv · Decorativ', 'p4.price': 'De la €160',
+      'p5.name': 'Pentru Totdeauna', 'p5.type': 'Nuntă · Evenimente', 'p5.price': 'De la €290',
+      'p6.name': 'Logo Neon', 'p6.type': 'Brand · Business', 'p6.price': 'De la €400',
+      'custom.label': 'Creat pentru Tine', 'custom.title': 'Comenzi<br>Personalizate',
+      'custom.p1': 'Fiecare piesă Opera LED începe cu o conversație. Împărtășește-ți viziunea — un cuvânt, o formă, un logo — și o vom aduce la viață în neon LED.',
+      'custom.p2': 'Fiecare semn este realizat cu grijă, construit să dureze și livrat direct la ușa ta oriunde în lume.',
+      'custom.step1title': 'Împărtășește Viziunea', 'custom.step1sub': 'Trimite-ne ideea, textul sau logo-ul prin formularul de mai jos',
+      'custom.step2title': 'Primești Design-ul', 'custom.step2sub': 'Îți trimitem un mockup digital în 48 de ore — gratuit',
+      'custom.step3title': 'Aprobi & Creăm', 'custom.step3sub': 'Odată aprobat, realizăm piesa ta în 10–14 zile',
+      'custom.step4title': 'Luminează', 'custom.step4sub': 'Livrată în siguranță la ușa ta, gata să strălucească',
+      'custom.cta': 'Începe Comanda Personalizată',
+      'about.label': 'Povestea Noastră', 'about.title': 'Lumina ca Formă de Artă',
+      'about.p1': 'Opera LED s-a născut dintr-o pasiune pentru intersecția dintre meșteșug și lumină. Credem că fiecare spațiu spune o poveste — și acea poveste merită să strălucească.',
+      'about.p2': 'Fiecare piesă este realizată manual din neon flex LED premium, montată pe acrilic tăiat cu precizie și finisată la standarde de galerie. Pentru că pereții tăi merită mai mult decât decorațiuni — merită artă.',
+      'about.stat1': 'Piese Realizate', 'about.stat2': 'Țări Livrate', 'about.stat3': 'Personalizat',
+      'testi.label': 'Ce Spun Ei', 'testi.title': 'Poveștile Clienților',
+      'testi.t1': '„Semnul neon de la nunta noastră a fost cel mai discutat element de decor al serii. Meșteșug absolut uimitor și lumina a fost perfectă."',
+      'testi.t2': '„Am comandat un logo neon pentru recepția studioului nostru. Calitatea este fenomenală și procesul a fost fără probleme. Recomand cu căldură Opera LED."',
+      'testi.t3': '„Trei piese în casa mea și primesc complimente de fiecare dată când vine cineva. Aceasta este artă adevărată — nu doar un semn."',
+      'contact.label': 'Contactează-ne', 'contact.title': 'Comandă sau Întreabă',
+      'contact.sub': 'Spune-ne despre proiectul tău. Îți răspundem în 24 de ore cu o propunere de design și un deviz.',
+      'form.name': 'Numele Tău', 'form.namePlaceholder': 'Ion Popescu',
+      'form.email': 'Adresă Email',
+      'form.type': 'Tipul Semnului', 'form.typeDefault': 'Selectează tipul',
+      'form.typeOpt1': 'Text / Nume Personalizat', 'form.typeOpt2': 'Logo Business',
+      'form.typeOpt3': 'Nuntă / Eveniment', 'form.typeOpt4': 'Motiv Decorativ', 'form.typeOpt5': 'Altul',
+      'form.size': 'Dimensiune Aproximativă', 'form.sizeDefault': 'Selectează dimensiunea',
+      'form.sizeOpt1': 'Mic (până la 40cm)', 'form.sizeOpt2': 'Mediu (40–80cm)',
+      'form.sizeOpt3': 'Mare (80–150cm)', 'form.sizeOpt4': 'Extra Mare (150cm+)',
+      'form.message': 'Viziunea Ta',
+      'form.messagePlaceholder': 'Descrie ideea ta — text, formă, culori, unde va fi expusă...',
+      'form.submit': 'Trimite Cererea',
+      'footer.copy': '© 2025 Opera LED. Toate drepturile rezervate.',
+      'alert.missing': 'Te rugăm să completezi numele și email-ul.',
+      'alert.thanks': 'Mulțumim, {name}! Te vom contacta în 24 de ore.',
+    }
+  };
+
+  let currentLang = (navigator.language || '').toLowerCase().startsWith('ro') ? 'ro' : 'en';
+
+  function setLang(lang) {
+    currentLang = lang;
+    document.documentElement.lang = lang;
+    localStorage.setItem('opera-lang', lang);
+
+    // Update button states (both desktop and mobile switchers)
+    ['btnEN','btnEN2'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.classList.toggle('active', lang === 'en');
+    });
+    ['btnRO','btnRO2'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.classList.toggle('active', lang === 'ro');
+    });
+
+    const dict = T[lang];
+
+    // data-i18n: set textContent
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      const key = el.getAttribute('data-i18n');
+      if (dict[key] !== undefined) el.textContent = dict[key];
+    });
+
+    // data-i18n-html: set innerHTML (for <br> tags)
+    document.querySelectorAll('[data-i18n-html]').forEach(el => {
+      const key = el.getAttribute('data-i18n-html');
+      if (dict[key] !== undefined) el.innerHTML = dict[key];
+    });
+
+    // data-i18n-placeholder
+    document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+      const key = el.getAttribute('data-i18n-placeholder');
+      if (dict[key] !== undefined) el.placeholder = dict[key];
+    });
+
+    // Page title
+    document.title = lang === 'ro'
+      ? 'Opera LED — Artă Neon Handcraftată'
+      : 'Opera LED — Handcrafted Neon Art';
+  }
+
+  /* ── CURSOR ── */
+  const isTouch = ('ontouchstart' in window) || navigator.maxTouchPoints > 0;
+  const cur = document.getElementById('cursor');
+  const ring = document.getElementById('cursor-ring');
+  if (!isTouch) {
+    let mx = 0, my = 0, rx = 0, ry = 0;
+    document.addEventListener('mousemove', e => {
+      mx = e.clientX; my = e.clientY;
+      cur.style.left = mx+'px'; cur.style.top = my+'px';
+    });
+    function animRing() {
+      rx += (mx-rx)*0.12; ry += (my-ry)*0.12;
+      ring.style.left = rx+'px'; ring.style.top = ry+'px';
+      requestAnimationFrame(animRing);
+    }
+    animRing();
+  } else {
+    if (cur) cur.style.display = 'none';
+    if (ring) ring.style.display = 'none';
+    document.body.style.cursor = 'auto';
+  }
+
+  /* ── MOBILE MENU ── */
+  const menuBtn = document.getElementById('menuBtn');
+  const menuClose = document.getElementById('menuClose');
+  const mobileMenu = document.getElementById('mobileMenu');
+
+  function openMenu() { mobileMenu.classList.add('open'); menuBtn.classList.add('open'); document.body.style.overflow = 'hidden'; }
+  function closeMenu() { mobileMenu.classList.remove('open'); menuBtn.classList.remove('open'); document.body.style.overflow = ''; }
+
+  menuBtn.addEventListener('click', openMenu);
+  menuClose.addEventListener('click', closeMenu);
+  document.querySelectorAll('.menu-link').forEach(l => l.addEventListener('click', closeMenu));
+  mobileMenu.addEventListener('click', e => { if (e.target === mobileMenu) closeMenu(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeMenu(); });
+
+  /* ── SCROLL REVEAL ── */
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.08 });
+  document.querySelectorAll('.reveal').forEach(r => obs.observe(r));
+
+  /* ── NAV SHRINK ── */
+  const nav = document.querySelector('nav');
+  window.addEventListener('scroll', () => {
+    nav.style.padding = window.scrollY > 60
+      ? (window.innerWidth > 900 ? '0.9rem 4rem' : '0.9rem 1.25rem')
+      : (window.innerWidth > 900 ? '1.4rem 4rem' : '1rem 1.25rem');
+  }, { passive: true });
+
+  /* ── FORM SUBMIT ── */
+  function handleSubmit() {
+    const name = document.getElementById('name').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const d = T[currentLang];
+    if (!name || !email) { alert(d['alert.missing']); return; }
+    alert(d['alert.thanks'].replace('{name}', name));
+  }
+
+  /* ── INIT ── */
+  const saved = localStorage.getItem('opera-lang');
+  setLang(saved || currentLang);
+</script>
+</body>
+</html>
